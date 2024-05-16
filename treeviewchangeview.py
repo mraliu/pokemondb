@@ -1,5 +1,6 @@
 import tkinter as tk, sqlite3
 from tkinter import ttk
+from tkinter import messagebox
 conn = sqlite3.connect("pokemon.db")
 
 def getfieldheadings():
@@ -7,6 +8,19 @@ def getfieldheadings():
     sql = 'SELECT * FROM pokemon'
     headings = cur.execute(sql)
     return headings
+
+def OnDoubleClick(event):
+    try:
+        # Get the Id of the first selected item.
+        item = treeview.selection()[0]
+        print(treeview.item(treeview.focus()))
+    except IndexError:
+        # If the tuple is empty, there is no selected item.
+        messagebox.showwarning(message="No Pokemon selected.", title="No selection")
+    else:
+        # Get and display the text of the selected item.
+        text = treeview.item(treeview.focus())['values']
+        messagebox.showinfo(message=text, title="Pokemon")
 
 def searchdb(ptype):
     cur = conn.cursor()
@@ -18,6 +32,9 @@ def searchdb(ptype):
     # Loop through db and add to treeview
     for record in res.fetchall():
         treeview.insert("", tk.END, text=record[0], values=record[1:])
+    treeview.bind("<Double-1>", OnDoubleClick)
+
+
 
 headings = getfieldheadings()
 heading = []
