@@ -37,8 +37,8 @@ def filterdb(ptype):
 def searchdb():
     item = searchentry.get()
     cur = conn.cursor()
-    sql = f'SELECT * FROM pokemon WHERE Name LIKE "%{item}%"'
-    # print(sql)
+    sql = f'SELECT * FROM pokemon WHERE "{listmenu.get()}" LIKE "%{item}%"'
+    print(sql)
     res = cur.execute(sql)
     for item in treeview.get_children():
       treeview.delete(item)
@@ -97,10 +97,18 @@ scrollbarh.config(command = treeview.xview)
 searchlbl = tk.Label(root, text="Search ", font="Arial 10")
 searchlbl.place(x=50, y=300)
 
+# Drop Down menu
+listmenu = tk.StringVar() 
+listmenu.set(heading[0]) 
+drop = tk.OptionMenu(root, listmenu, *heading) 
+drop.place(x=100, y=295, width=100)
+
 searchentry  = tk.Entry(root)
-searchentry.place(x=100, y=300)
+searchentry.place(x=220, y=300)
 
 searchbtn  = tk.Button(root, text="Search", command=searchdb, bg="Gold")
-searchbtn.place(x=230, y=300, height=20)
+searchbtn.place(x=350, y=300, height=20)
+
+
 
 root.mainloop()
