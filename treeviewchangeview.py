@@ -22,7 +22,7 @@ def OnDoubleClick(event):
         text = treeview.item(treeview.focus())['values']
         messagebox.showinfo(message=text, title="Pokemon")
 
-def searchdb(ptype):
+def filterdb(ptype):
     cur = conn.cursor()
     sql = f'SELECT * FROM pokemon WHERE "Type 1" = "{ptype}"'
     res = cur.execute(sql)
@@ -34,7 +34,18 @@ def searchdb(ptype):
         treeview.insert("", tk.END, text=record[0], values=record[1:])
     treeview.bind("<Double-1>", OnDoubleClick)
 
-
+def searchdb():
+    item = searchentry.get()
+    cur = conn.cursor()
+    sql = f'SELECT * FROM pokemon WHERE "Type 1" LIKE "%{item}%"'
+    print(sql)
+    res = cur.execute(sql)
+    for item in treeview.get_children():
+      treeview.delete(item)
+    # Loop through db and add to treeview
+    for record in res.fetchall():
+        treeview.insert("", tk.END, text=record[0], values=record[1:])
+    treeview.bind("<Double-1>", OnDoubleClick)
 
 headings = getfieldheadings()
 heading = []
@@ -44,23 +55,25 @@ for field in headings.description:
 
 heading = tuple(heading)
 
+# Tk Main Window
 root = tk.Tk()
 root.title("DB window")
 root.geometry("800x600")
 
+# Tk Elements
 scrollbarv = tk.Scrollbar(root, orient='vertical')
 scrollbarh = tk.Scrollbar(root, orient='horizontal')
 
-grassbtn = tk.Button(root, text="Grass", command=lambda x="Grass":searchdb(x), bg="Green")
+grassbtn = tk.Button(root, text="Grass", command=lambda x="Grass":filterdb(x), bg="Green")
 grassbtn.place(x = 50, y = 75, width = 100, height = 20)
 
-firebtn = tk.Button(root, text="Fire", command=lambda x="Fire":searchdb(x), bg="Red")
+firebtn = tk.Button(root, text="Fire", command=lambda x="Fire":filterdb(x), bg="Red")
 firebtn.place(x = 150, y = 75, width = 100, height = 20)
 
-waterbtn = tk.Button(root, text="Water", command=lambda x="Water":searchdb(x), bg="Aqua")
+waterbtn = tk.Button(root, text="Water", command=lambda x="Water":filterdb(x), bg="Aqua")
 waterbtn.place(x = 250, y = 75, width = 100, height = 20)
 
-bugbtn = tk.Button(root, text="Bug", command=lambda x="Bug":searchdb(x), bg="Brown")
+bugbtn = tk.Button(root, text="Bug", command=lambda x="Bug":filterdb(x), bg="Brown")
 bugbtn.place(x = 350, y = 75, width = 100, height = 20)
 
 treeview = ttk.Treeview(columns=heading[1:])
@@ -81,8 +94,13 @@ scrollbarh.place(x=50, y=275, width=700)
 scrollbarv.config(command = treeview.yview)
 scrollbarh.config(command = treeview.xview)
 
+searchlbl = tk.Label(root, text="Search ", font="Arial 10")
+searchlbl.place(x=50, y=300)
 
+searchentry  = tk.Entry(root)
+searchentry.place(x=100, y=300)
 
-
+searchbtn  = tk.Button(root, text="Search", command=searchdb, bg="Gold")
+searchbtn.place(x=230, y=300, height=20)
 
 root.mainloop()
