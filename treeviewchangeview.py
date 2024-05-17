@@ -37,8 +37,8 @@ def filterdb(ptype):
 def searchdb():
     item = searchentry.get()
     cur = conn.cursor()
-    sql = f'SELECT * FROM pokemon WHERE "Type 1" LIKE "%{item}%"'
-    print(sql)
+    sql = f'SELECT * FROM pokemon WHERE Name LIKE "%{item}%"'
+    # print(sql)
     res = cur.execute(sql)
     for item in treeview.get_children():
       treeview.delete(item)
