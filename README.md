@@ -7,3 +7,5 @@ Sample code on how to use sqlite with tkinter.
 * Drop down menu tk
 * Clearing treeview data
 * Updating treeview data
+
+treeviewchangedata.py is the main file with everything combined
